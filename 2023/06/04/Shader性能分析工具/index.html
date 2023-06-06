@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Shader," />
+  
+
+  
+    <meta name="description" content="Shader性能分析工具" />
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/logo.png">
+  
+  <title>Shader性能分析工具 [ BLOG ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">BLOG</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/introduce" class="pure-menu-link">介绍</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Shader性能分析工具
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2023-06-04T04:30:35.000Z">
+        2023-06-04
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shader/" rel="tag">Shader</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 8 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>通过反射把 ShaderLab代码生成OpenGL ES着色器代码,会利用OpenGL ES 代码模拟在ARM GPU 架构下的性能表现主要是代码复杂度(如运算)已经相应的指令和优化建议Bound，以下默认是Mali-G710(天玑9000)作为模拟环境(基于ARM Mali Offline Compiler) 解析生成的数据。桌面GUI软件基于WPF实现,为Shader优化提供参考指标</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9otC4"><img src="https://s1.ax1x.com/2023/06/04/pC9otC4.png" alt="pC9otC4.png"></a><br><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9owK1"><img src="https://s1.ax1x.com/2023/06/04/pC9owK1.png" alt="pC9owK1.png"></a></p>
+<p>Unity 内导入该扩展SDK,选中Shader文件(确保不是URP管线和HDRP管线Shader) 右键AnalyseShader即可<br><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9og8H"><img src="https://s1.ax1x.com/2023/06/04/pC9og8H.png" alt="pC9og8H.png"></a></p>
+<p>生成的中间临时目录（Assets目录同级下CompileShader目录），每个Pass分别会生成OpenGL ES的顶点和片段着色器代码，中途会自动打开编辑器因为反射调用了Editor内部代码,内部调用了内核的代码</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">CompileShader</span>(<span class="params">Shader shader</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    ParseList.Clear();</span><br><span class="line">    CurShader = shader;</span><br><span class="line">    <span class="keyword">if</span> (DebugToggle)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">$&quot;ShaderInspectorPlatformMode &gt;&gt; <span class="subst">&#123;EditorPrefs.GetInt(<span class="string">&quot;ShaderInspectorPlatformMode&quot;</span>, <span class="number">1</span>)&#125;</span>&quot;</span>);</span><br><span class="line">        Debug.Log(<span class="string">$&quot;ShaderInspectorPlatformMask &gt;&gt; <span class="subst">&#123;EditorPrefs.GetInt(<span class="string">&quot;ShaderInspectorPlatformMask&quot;</span>, <span class="number">1</span>)&#125;</span>&quot;</span>);</span><br><span class="line">        Debug.Log(<span class="string">$&quot;ShaderInspectorVariantStripping &gt;&gt; <span class="subst">&#123;EditorPrefs.GetInt(<span class="string">&quot;ShaderInspectorVariantStripping&quot;</span>, <span class="number">1</span>)&#125;</span>&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">string</span> winTitle = <span class="string">$&quot;<span class="subst">&#123;GetSlnName()&#125;</span> - Microsoft Visual Studio&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> POpenCompiledShader = mAssembly.GetType(<span class="string">&quot;UnityEditor.ShaderUtil&quot;</span>).GetMethod(<span class="string">&quot;OpenCompiledShader&quot;</span>, Binding);</span><br><span class="line">    POpenCompiledShader.Invoke(<span class="literal">null</span>, <span class="keyword">new</span> <span class="built_in">object</span>[<span class="number">4</span>] &#123; shader, <span class="number">3</span>, <span class="number">512</span>, <span class="literal">false</span> &#125;);</span><br><span class="line">    <span class="keyword">if</span> (!OpenToggle) WinExtension.WindowMin(winTitle);</span><br><span class="line">    <span class="built_in">string</span> compilePath = Application.dataPath + <span class="string">&quot;/../Temp/Compiled-&quot;</span> + shader.name.Replace(<span class="string">&quot;/&quot;</span>, <span class="string">&quot;-&quot;</span>) + <span class="string">&quot;.shader&quot;</span>;</span><br><span class="line">    status = ShaderAnalyseStatus.Analyse;</span><br><span class="line">    <span class="keyword">return</span> compilePath;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9o22d"><img src="https://s1.ax1x.com/2023/06/04/pC9o22d.png" alt="pC9o22d.png"></a></p>
+<p>因为导出结果没有固定规则的，所以需要自己手动去解析，这里单独实现了一个非规则数据的解析库,局部参考</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ShaderCompileProgram</span> : <span class="title">BaseProgram</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">async</span> Task <span class="title">OnStart</span>(<span class="params"><span class="keyword">params</span> <span class="built_in">object</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">base</span>.OnStart(args);</span><br><span class="line">        <span class="built_in">int</span> findStartIndex = <span class="number">-1</span>;</span><br><span class="line">        <span class="built_in">int</span> findEndIndex = <span class="number">-1</span>;</span><br><span class="line">        <span class="built_in">int</span> passCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> status = <span class="keyword">await</span> System.Execute&lt;LineFindCountRule&gt;((<span class="built_in">object</span>[] o) =&gt;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> getVal = (<span class="built_in">int</span>)o[<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">if</span> (getVal &gt; <span class="number">0</span>) passCount = getVal;</span><br><span class="line">        &#125;, <span class="string">&quot; Pass &#123;&quot;</span>);</span><br><span class="line">        Debug.Log(passCount);</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> index = <span class="number">0</span>; index &lt; passCount; index++)</span><br><span class="line">        &#123;</span><br><span class="line">            status = <span class="keyword">await</span> System.ExecuteUntilSuccess&lt;LineFintStartRule&gt;((<span class="built_in">object</span>[] o) =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> getVal = (<span class="built_in">int</span>)o[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">if</span> (getVal != <span class="number">-1</span>) findStartIndex = getVal + <span class="number">1</span>;</span><br><span class="line">            &#125;, <span class="string">&quot;#ifdef VERTEX&quot;</span>, <span class="string">&quot;#version 300 es&quot;</span>);</span><br><span class="line"></span><br><span class="line">            status = <span class="keyword">await</span> System.ExecuteUntilSuccess&lt;LineFintStartRule&gt;((<span class="built_in">object</span>[] o) =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> getVal = (<span class="built_in">int</span>)o[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">if</span> (getVal != <span class="number">-1</span>) findEndIndex = getVal - <span class="number">1</span>;</span><br><span class="line">            &#125;, <span class="string">&quot;#endif&quot;</span>, <span class="string">&quot;#ifdef FRAGMENT&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="built_in">string</span>[] subVertexArray = <span class="keyword">new</span> <span class="built_in">string</span>[findEndIndex - findStartIndex];</span><br><span class="line">            Array.Copy(<span class="keyword">this</span>.System.lines, findStartIndex, subVertexArray, <span class="number">0</span>, findEndIndex - findStartIndex);</span><br><span class="line">            findStartIndex = <span class="number">-1</span>;</span><br><span class="line">            findEndIndex = <span class="number">-1</span>;</span><br><span class="line">            <span class="comment">// --------------------------------------</span></span><br><span class="line"></span><br><span class="line">            status = <span class="keyword">await</span> System.ExecuteUntilSuccess&lt;LineFintStartRule&gt;((<span class="built_in">object</span>[] o) =&gt;</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> getVal = (<span class="built_in">int</span>)o[<span class="number">0</span>];</span><br><span class="line">                <span class="keyword">if</span> (getVal != <span class="number">-1</span>) findStartIndex = getVal + <span class="number">1</span>;</span><br><span class="line">            &#125;, <span class="string">&quot;#ifdef FRAGMENT&quot;</span>, <span class="string">&quot;#version 300 es&quot;</span>);</span><br><span class="line"></span><br><span class="line">            status = <span class="keyword">await</span> System.ExecuteUntilSuccess&lt;FindPreNotEqualRule&gt;(<span class="string">&quot;-- Hardware tier variant&quot;</span>, <span class="string">&quot;Local Keywords: &lt;none&gt;&quot;</span>, <span class="string">&quot;Global Keywords: &lt;none&gt;&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (status) findEndIndex = System.CurLineIndex - <span class="number">3</span>;</span><br><span class="line">            Debug.Log(<span class="string">&quot;findEndIndex&quot;</span> + findEndIndex);</span><br><span class="line">            Debug.Log(<span class="string">&quot;findStartIndex&quot;</span> + findStartIndex);</span><br><span class="line"></span><br><span class="line">            <span class="built_in">string</span>[] subFragmentArray = <span class="keyword">new</span> <span class="built_in">string</span>[findEndIndex - findStartIndex];</span><br><span class="line">            Array.Copy(<span class="keyword">this</span>.System.lines, findStartIndex, subFragmentArray, <span class="number">0</span>, findEndIndex - findStartIndex);</span><br><span class="line"></span><br><span class="line">            System.FinishProgram(<span class="keyword">new</span> <span class="built_in">object</span>[<span class="number">3</span>] &#123; index, subVertexArray, subFragmentArray &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Exit</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">base</span>.Exit();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Load</span>(<span class="params">RuleSystem system</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">base</span>.Load(system);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">UnLoad</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">base</span>.UnLoad();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>桌面端基本就数据解析，控件绑定，更新同步,安装包封包<br><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9TDQs"><img src="https://s1.ax1x.com/2023/06/04/pC9TDQs.png" alt="pC9TDQs.png"></a></p>
+<h2 id="ARM-Mali-Offline-Compiler相关指令作用参考"><a href="#ARM-Mali-Offline-Compiler相关指令作用参考" class="headerlink" title="ARM Mali Offline Compiler相关指令作用参考"></a>ARM Mali Offline Compiler相关指令作用参考</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Uniform registers</span><br><span class="line">一个只读寄存器，用于存储着色器可能需要的常量及时间常量。</span><br><span class="line">Stack spilling</span><br><span class="line">对于Valhall 和 Bifrost GPUs，可以看到是否有变量被放置到栈内存中。放置到栈中的内存对于GPU读取是性能消耗较大的。</span><br><span class="line">16-bit arithmetic</span><br><span class="line">以 16 位或更低精度执行的算术运算的百分比，只计算纯算术指令（不包括插值、纹理和混合），这个着色器很少。我们也只计算完全是 16 位的指令（16 位输入、16 位数据处理、16 位输出）。丢弃指令 discard 只有一个 32 位数据路径，因此将包括 16 位输入的隐式扩展。这对性能没有影响，但确实意味着它不会出现在统计数据中，一些内置函数只有 32 位数据路径。尽管我为他们提供了 16 位参数，但他们仍然将它们作为 32 位参数处理</span><br><span class="line">Shader信息</span><br><span class="line">Total Instruction Cycles</span><br><span class="line">为程序生成的所有指令的累积执行周期数，与程序控制流无关。</span><br><span class="line"></span><br><span class="line">Shortest Path Cycles</span><br><span class="line">通过着色器程序的最短控制流路径的循环数的估计。该行根据设计中存在的功能单元数量对周期成本进行标准化。</span><br><span class="line">Longest Path Cycles</span><br><span class="line">通过着色器程序的最长控制流路径的循环数的估计。该行根据设计中存在的功能单元数量对周期成本进行标准化。并非总是可以根据静态分析确定最长路径</span><br><span class="line">A = Arithmetic operations</span><br><span class="line">数学运算操作符。具体代表了shader中sum multiply等操作</span><br><span class="line">FMA Fused multiply accumulate</span><br><span class="line">加减乘除运算符</span><br><span class="line">CVT Arithmetic conversion</span><br><span class="line">算术转换操作符</span><br><span class="line">SFU Special functions unit</span><br><span class="line">特殊功能单元</span><br><span class="line">LS = Load/Store operation</span><br><span class="line">读取和存储的操作</span><br><span class="line">V = Varying operations</span><br><span class="line">在shader中不同单位插值的消耗</span><br><span class="line">T = Texture operations</span><br><span class="line">采样贴图的消耗</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://developer.arm.com/Tools%20and%20Software/Mali%20Offline%20Compiler">https://developer.arm.com/Tools%20and%20Software/Mali%20Offline%20Compiler</a></p>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-text">使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ARM-Mali-Offline-Compiler%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4%E4%BD%9C%E7%94%A8%E5%8F%82%E8%80%83"><span class="toc-text">ARM Mali Offline Compiler相关指令作用参考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2023/06/04/ShaderModel%E5%85%BC%E5%AE%B9%E6%94%AF%E6%8C%81/" rel="next" title="ShaderModel兼容支持">
+          ShaderModel兼容支持
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2023/06/05/%E5%B8%B8%E8%A7%81%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5GPUInstance%E4%BB%A5%E5%8F%8ABatching%E6%80%BB%E7%BB%93/" rel="prev" title="常见优化手段GPUInstance以及Batching总结">
+            常见优化手段GPUInstance以及Batching总结
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    <div class="giscus" style="padding: 10px 50px"></div>
+    <script src="https://giscus.app/client.js"
+        data-repo="byshenhang/byshenhang.github.io"
+        data-repo-id="R_kgDOJq36zA"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOJq36zM4CW8Cm"
+        data-mapping="title"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="https://cdn.jsdelivr.net/gh/fooying/hexo-theme-xoxo-plus@master/source/css/light_tritanopia_xoxo.min.css"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/byshenhang" target="_blank">GitHub</a> |
+        <a class="bottom-item" target="_blank" rel="noopener" href="https://space.bilibili.com/392721639">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by ShenHang</a> |
+        <!-- <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> | -->
+        <a class="bottom-item" >2023</a>
+    </div>
+</footer>
+
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+
+</body>
+</html>

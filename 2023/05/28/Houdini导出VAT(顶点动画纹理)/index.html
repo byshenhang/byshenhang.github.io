@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Houdini," />
+  
+
+  
+    <meta name="description" content="Houdini导出VAT(顶点动画纹理)到Unity" />
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/logo.png">
+  
+  <title>Houdini导出VAT(顶点动画纹理)到Unity [ BLOG ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">BLOG</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/introduce" class="pure-menu-link">介绍</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Houdini导出VAT(顶点动画纹理)到Unity
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2023-05-28T12:30:25.000Z">
+        2023-05-28
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 4 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>VAT（Vertex Animation Texture，顶点动画纹理）是一种用于实现复杂模型的动画效果的技术。它使用了一张二维贴图，将顶点动画序列编码成纹理。相比于传统的骨骼动画或形状关键帧动画，VAT具有更高的渲染效率和更小的内存占用。</p>
+<p>VAT的工作原理是将每个顶点在不同时间点上的位置、法线和纹理坐标等信息存储到一张二维贴图中。在渲染时，通过对贴图进行采样，从而读取每个顶点在当前时间点上的正确位置、法线和纹理坐标。这样就可以实现高效且真实的顶点动画效果。</p>
+<h2 id="具有以下优点："><a href="#具有以下优点：" class="headerlink" title="具有以下优点："></a>具有以下优点：</h2><ul>
+<li><p>高效性：相比于传统的骨骼动画或形状关键帧动画，VAT只需要一次渲染，就可以同时渲染多个物体，从而提高渲染效率。</p>
+</li>
+<li><p>内存占用少：由于所有动画信息都编码到一张纹理中，所以VAT的内存占用相对较小，这对于需要在移动设备或低端硬件上运行的应用程序特别有用。</p>
+</li>
+<li><p>灵活性：因为VAT将动画序列编码成一张纹理，所以可以使用各种渲染技术来处理它，如多层纹理、mipmap和阴影贴图等。</p>
+</li>
+</ul>
+<h2 id="Unity-提供流程"><a href="#Unity-提供流程" class="headerlink" title="Unity 提供流程"></a>Unity 提供流程</h2><h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><ul>
+<li>确保安装了Unity VFX Tool HDA</li>
+</ul>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>在Out创建输出VAT_OUT节点,指定输出对象设置调整相应参数输出即可<br><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9W2gx"><img src="https://s1.ax1x.com/2023/06/04/pC9W2gx.png" alt="pC9W2gx.png"></a></p>
+<p>其他信息并没有Houdini 那套流程完善<br><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9WhDO"><img src="https://s1.ax1x.com/2023/06/04/pC9WhDO.png" alt="pC9WhDO.png"></a></p>
+<h2 id="Houdini-提供流程"><a href="#Houdini-提供流程" class="headerlink" title="Houdini 提供流程"></a>Houdini 提供流程</h2><h3 id="前提-1"><a href="#前提-1" class="headerlink" title="前提"></a>前提</h3><ul>
+<li>确保Houdini有安装了SideFX Lab Tool</li>
+</ul>
+<h3 id="使用-1"><a href="#使用-1" class="headerlink" title="使用"></a>使用</h3><p>Unity 导入指定Houdini版本的VAT包，这里给了个参考查找的地址</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\HoudiniTool\SideFXLabs-Development\unity\shaders\URP_VAT3</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9WzVg"><img src="https://s1.ax1x.com/2023/06/04/pC9WzVg.png" alt="pC9WzVg.png"></a></p>
+<h3 id="导出模式"><a href="#导出模式" class="headerlink" title="导出模式"></a>导出模式</h3><p>分别对应了布料 刚体 流体 粒子 导出，并设置对应的导出引擎 Out创建Labs Vertex Animation Textures<br><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9fSaQ"><img src="https://s1.ax1x.com/2023/06/04/pC9fSaQ.png" alt="pC9fSaQ.png"></a></p>
+<p>输出分别对应材质，VAT贴图，模型文件<br><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9fp5j"><img src="https://s1.ax1x.com/2023/06/04/pC9fp5j.png" alt="pC9fp5j.png"></a></p>
+<p>确保Unity 安装了对应VAT插件（Shader 和导入设置）移动Package 中的 Import文件到Assets目录下 (分别设置纹理和模型对应的导入设置（否则显示会不准确）)<br><a target="_blank" rel="noopener" href="https://imgse.com/i/pC9fi2q"><img src="https://s1.ax1x.com/2023/06/04/pC9fi2q.png" alt="pC9fi2q.png"></a></p>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E6%9C%89%E4%BB%A5%E4%B8%8B%E4%BC%98%E7%82%B9%EF%BC%9A"><span class="toc-text">具有以下优点：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unity-%E6%8F%90%E4%BE%9B%E6%B5%81%E7%A8%8B"><span class="toc-text">Unity 提供流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E6%8F%90"><span class="toc-text">前提</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-text">使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Houdini-%E6%8F%90%E4%BE%9B%E6%B5%81%E7%A8%8B"><span class="toc-text">Houdini 提供流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E6%8F%90-1"><span class="toc-text">前提</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-1"><span class="toc-text">使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%87%BA%E6%A8%A1%E5%BC%8F"><span class="toc-text">导出模式</span></a></li></ol></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2023/05/28/Houdini%E5%AF%BC%E5%87%BAFilpbook%E5%BA%8F%E5%88%97%E5%B8%A7%E7%BA%B9%E7%90%86/" rel="next" title="Houdini导出Filpbook序列帧纹理">
+          Houdini导出Filpbook序列帧纹理
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2023/06/04/%E5%9F%BA%E4%BA%8EUV%E8%8C%83%E5%9B%B4%E5%AE%9E%E7%8E%B0%E5%A4%9A%E5%A5%97Mask%E5%8C%BA%E5%9F%9F/" rel="prev" title="基于UV范围实现多套Mask区域">
+            基于UV范围实现多套Mask区域
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    <div class="giscus" style="padding: 10px 50px"></div>
+    <script src="https://giscus.app/client.js"
+        data-repo="byshenhang/byshenhang.github.io"
+        data-repo-id="R_kgDOJq36zA"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOJq36zM4CW8Cm"
+        data-mapping="title"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="https://cdn.jsdelivr.net/gh/fooying/hexo-theme-xoxo-plus@master/source/css/light_tritanopia_xoxo.min.css"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/byshenhang" target="_blank">GitHub</a> |
+        <a class="bottom-item" target="_blank" rel="noopener" href="https://space.bilibili.com/392721639">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by ShenHang</a> |
+        <!-- <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> | -->
+        <a class="bottom-item" >2023</a>
+    </div>
+</footer>
+
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+
+</body>
+</html>

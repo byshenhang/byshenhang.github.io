@@ -1,0 +1,337 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Houdini," />
+  
+
+  
+    <meta name="description" content="如何利用Houdini做特效贴图" />
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/logo.png">
+  
+  <title>如何利用Houdini做特效贴图 [ BLOG ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">BLOG</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/introduce" class="pure-menu-link">介绍</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        如何利用Houdini做特效贴图
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2023-05-28T10:50:32.000Z">
+        2023-05-28
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Houdini/" rel="tag">Houdini</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 1 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h2 id="创建一个相机并设置"><a href="#创建一个相机并设置" class="headerlink" title="创建一个相机并设置"></a>创建一个相机并设置</h2><h3 id="这里大概注意这些参数"><a href="#这里大概注意这些参数" class="headerlink" title="这里大概注意这些参数"></a>这里大概注意这些参数</h3><ul>
+<li>长度和宽度比例 如512 * 512 后面渲染成正方形面片</li>
+<li>正交相机模式设置</li>
+<li>近裁剪和远裁剪面设置</li>
+<li>位置参数</li>
+</ul>
+<p><img src="https://s3.bmp.ovh/imgs/2023/06/04/f95162f25b33e045.png"></p>
+<p>切换渲染为创建的相机</p>
+<h2 id="对于光照渲染关闭-影响画面显示"><a href="#对于光照渲染关闭-影响画面显示" class="headerlink" title="对于光照渲染关闭(影响画面显示)"></a>对于光照渲染关闭(影响画面显示)</h2><p>启用<br><img src="https://s3.bmp.ovh/imgs/2023/06/04/5f6cd1d76f02c357.png"><br>不启用<br><img src="https://s3.bmp.ovh/imgs/2023/06/04/a26c84eb4fa64df2.png"></p>
+<h2 id="指定背景为黑色（按D键打开设置）"><a href="#指定背景为黑色（按D键打开设置）" class="headerlink" title="指定背景为黑色（按D键打开设置）"></a>指定背景为黑色（按D键打开设置）</h2><p><img src="https://s3.bmp.ovh/imgs/2023/06/04/609521666f22fcec.png"></p>
+<p><img src="https://s3.bmp.ovh/imgs/2023/06/04/b4ce21e20ffa7660.png"></p>
+<h2 id="最后Render"><a href="#最后Render" class="headerlink" title="最后Render"></a>最后Render</h2><p><img src="https://s3.bmp.ovh/imgs/2023/06/04/f02fc886049262d0.png"></p>
+<h2 id="粒子结算"><a href="#粒子结算" class="headerlink" title="粒子结算"></a>粒子结算</h2><p><img src="https://s3.bmp.ovh/imgs/2023/06/04/54e7098edab4cd9d.png"></p>
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%9B%B8%E6%9C%BA%E5%B9%B6%E8%AE%BE%E7%BD%AE"><span class="toc-text">创建一个相机并设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%99%E9%87%8C%E5%A4%A7%E6%A6%82%E6%B3%A8%E6%84%8F%E8%BF%99%E4%BA%9B%E5%8F%82%E6%95%B0"><span class="toc-text">这里大概注意这些参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8E%E5%85%89%E7%85%A7%E6%B8%B2%E6%9F%93%E5%85%B3%E9%97%AD-%E5%BD%B1%E5%93%8D%E7%94%BB%E9%9D%A2%E6%98%BE%E7%A4%BA"><span class="toc-text">对于光照渲染关闭(影响画面显示)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E5%AE%9A%E8%83%8C%E6%99%AF%E4%B8%BA%E9%BB%91%E8%89%B2%EF%BC%88%E6%8C%89D%E9%94%AE%E6%89%93%E5%BC%80%E8%AE%BE%E7%BD%AE%EF%BC%89"><span class="toc-text">指定背景为黑色（按D键打开设置）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8ERender"><span class="toc-text">最后Render</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B2%92%E5%AD%90%E7%BB%93%E7%AE%97"><span class="toc-text">粒子结算</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2023/05/28/%E5%A6%82%E4%BD%95%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85SideFX%20Labs/" rel="next" title="如何手动安装SideFX Labs">
+          如何手动安装SideFX Labs
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2023/05/28/Houdini%E5%AF%BC%E5%87%BAFilpbook%E5%BA%8F%E5%88%97%E5%B8%A7%E7%BA%B9%E7%90%86/" rel="prev" title="Houdini导出Filpbook序列帧纹理">
+            Houdini导出Filpbook序列帧纹理
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+    <div class="giscus" style="padding: 10px 50px"></div>
+    <script src="https://giscus.app/client.js"
+        data-repo="byshenhang/byshenhang.github.io"
+        data-repo-id="R_kgDOJq36zA"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOJq36zM4CW8Cm"
+        data-mapping="title"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="https://cdn.jsdelivr.net/gh/fooying/hexo-theme-xoxo-plus@master/source/css/light_tritanopia_xoxo.min.css"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/byshenhang" target="_blank">GitHub</a> |
+        <a class="bottom-item" target="_blank" rel="noopener" href="https://space.bilibili.com/392721639">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by ShenHang</a> |
+        <!-- <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> | -->
+        <a class="bottom-item" >2023</a>
+    </div>
+</footer>
+
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+
+</body>
+</html>
