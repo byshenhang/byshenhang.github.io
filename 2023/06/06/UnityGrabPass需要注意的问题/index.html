@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="" />
+  
+
+  
+    <meta name="description" content="UnityGrabPass需要注意的问题" />
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/logo.png">
+  
+  <title>UnityGrabPass需要注意的问题 [ BLOG ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">BLOG</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/introduce" class="pure-menu-link">介绍</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        UnityGrabPass需要注意的问题
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2023-06-06T05:59:36.000Z">
+        2023-06-06
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 8 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h2 id="关于GrabPass的介绍"><a href="#关于GrabPass的介绍" class="headerlink" title="关于GrabPass的介绍"></a>关于GrabPass的介绍</h2><p>GrabPass是一种Unity shader语言中的指令，它允许在一个Pass中捕获屏幕上之前渲染的纹理到一个变量中。这个变量在后面的Pass中可以被用来进行其他的计算或作为纹理使用。</p>
+<p>通常情况下，当我们需要在一个shader中对一个屏幕上已经绘制的像素进行处理时，比如实现全局反射等效果，我们需要将屏幕中内容先渲染到一张纹理中，然后再将其传入Shader中。而使用GrabPass可以直接在Shader中获取当前屏幕的纹理，避免了中间转换的步骤，提高了渲染效率。</p>
+<p>官方文档 <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/SL-GrabPass.html">https://docs.unity3d.com/Manual/SL-GrabPass.html</a></p>
+<h2 id="基础示例"><a href="#基础示例" class="headerlink" title="基础示例"></a>基础示例</h2><figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">Shader &quot;Custom/GrabPassExample&quot; &#123;</span><br><span class="line">    Properties &#123;</span><br><span class="line">        _MainTex (&quot;Texture&quot;, <span class="number">2</span>D) = &quot;white&quot; &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    SubShader &#123;</span><br><span class="line">        Pass &#123;</span><br><span class="line">            GrabPass &#123; &quot;_GrabScreenTexture&quot; &#125;</span><br><span class="line">            </span><br><span class="line">            CGPROGRAM</span><br><span class="line">            <span class="meta">#pragma vertex vert</span></span><br><span class="line">            <span class="meta">#pragma fragment frag</span></span><br><span class="line">            </span><br><span class="line">            <span class="type">sampler2D</span> _MainTex;</span><br><span class="line">            <span class="type">sampler2D</span> _GrabScreenTexture;</span><br><span class="line">            </span><br><span class="line">            struct appdata &#123;</span><br><span class="line">                float4 vertex : POSITION;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">            &#125;;</span><br><span class="line">            </span><br><span class="line">            struct v2f &#123;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">                float4 grabPos : TEXCOORD1;</span><br><span class="line">                float4 vertex : SV_POSITION;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            inline float4 ComputeScreenPos (float4 pos) </span><br><span class="line">            &#123;</span><br><span class="line">                <span class="meta">#if UNITY_UV_STARTS_AT_TOP</span></span><br><span class="line">                    <span class="type">float</span> scale = <span class="number">-1.0</span>;</span><br><span class="line">                <span class="meta">#else</span></span><br><span class="line">                    <span class="type">float</span> scale = <span class="number">1.0</span>;</span><br><span class="line">                <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">                float4 o = pos * <span class="number">0.5</span>f;</span><br><span class="line">                o.xy = float2(o.x, o.y*scale) + o.w;</span><br><span class="line">                o.zw = pos.zw;</span><br><span class="line">                <span class="keyword">return</span> o;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            v2f vert (appdata v) &#123;</span><br><span class="line">                v2f o;</span><br><span class="line">                o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line">                o.uv = v.uv;</span><br><span class="line">                o.grabPos = ComputeGrabScreenPos(v.vertex);</span><br><span class="line">                <span class="keyword">return</span> o;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            fixed4 frag (v2f i) : SV_Target &#123;</span><br><span class="line">                fixed4 col = tex2D(_GrabScreenTexture, i.grabPos);</span><br><span class="line">                <span class="keyword">return</span> col;</span><br><span class="line">            &#125;</span><br><span class="line">            ENDCG</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    FallBack &quot;Diffuse&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题"></a>性能问题</h2><p>一种是直接GrabPass{},将抓取到的纹理贴图存储在系统的_GrabScreenTexture变量中，但是会导致GrabPass的物体都进行抓屏操作。</p>
+<p>另一种是GrabPass{“Name”},其中Name为自定义的贴图名称,只为第一个使用的物体进行抓屏，后续的则可复用该贴图，数量多时会大幅提升性能</p>
+<h2 id="渲染队列"><a href="#渲染队列" class="headerlink" title="渲染队列"></a>渲染队列</h2><p>GrabPass通常在渲染透明物体使用比较多，即需要把渲染队列设置成透明队列（即”Queue”&#x3D;“Transparent”）.这样才能保证当渲染该物体时,所有的不透明物体都已经被绘制在屏幕上了,从而获取正确的屏幕图像</p>
+<p>可结合FrameDebug看整体渲染流程<br><img src="https://s3.bmp.ovh/imgs/2023/06/06/8969bf7ee0554fa5.png"></p>
+<h2 id="如何自定义Grab抓屏操作而不用GrabPass"><a href="#如何自定义Grab抓屏操作而不用GrabPass" class="headerlink" title="如何自定义Grab抓屏操作而不用GrabPass"></a>如何自定义Grab抓屏操作而不用GrabPass</h2><p>使用GrabPass遇到过在低端机上会出现Crash的情况,当整体渲染压力较小时整体抓屏不会导致Crash随之渲染压力增加就会导致崩溃,后续实测在1024MB显存情况下会出现Crash,但是在2048MB显存情况下不会出现Crash,所以推测是显存不足导致的Crash.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SystemInfo.graphicsMemorySize</span><br></pre></td></tr></table></figure>
+
+<p>竟然是显存不足导致的问题,一个是Shader里面进行宏分支判断期间遇到问题是对于GrabPass {} 实际只要存在即便不去采样就会导致.而语法层面并不能直接宏判断GrabPass {} 激活状态.所以需要单独实现一套GrabPass的功能.从而根据显存进行一个动态控制（仅对于单相机）</p>
+<h2 id="自定义Grab实现"><a href="#自定义Grab实现" class="headerlink" title="自定义Grab实现"></a>自定义Grab实现</h2><p>通过CommandBuffer对指定CameraEvent进行Blit(AfterSkybox, AfterForwardOpaque, AfterEverything),通过SetGlobalTexture设置全局纹理，替代GrabPass的纹理</p>
+<p>关于CameraEvent可参考如下图<br><img src="https://s3.bmp.ovh/imgs/2023/06/06/d0a00da80d356222.png"></p>
+<p>这里提供一个示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">public class GrabScreen : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    public bool isEnableCustom = false;</span><br><span class="line">    private bool preEnableCustom = false;</span><br><span class="line"></span><br><span class="line">    private Camera camera;</span><br><span class="line">    private CommandBuffer blitColorBufCommandBuffer;</span><br><span class="line">    private CommandBuffer blitDepthBufCommandBuffer;</span><br><span class="line">    private CommandBuffer blitBackBufCommandBuffer;</span><br><span class="line"></span><br><span class="line">    public RenderTexture colorBuffer;</span><br><span class="line">    public RenderTexture depthBuffer;</span><br><span class="line"></span><br><span class="line">    public RenderTexture colorTex;</span><br><span class="line">    public RenderTexture depthTex;</span><br><span class="line"></span><br><span class="line">    private void Start()</span><br><span class="line">    &#123;</span><br><span class="line">        camera = GetComponent&lt;Camera&gt;();</span><br><span class="line">        RenderTarget();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void RenderTarget()</span><br><span class="line">    &#123;</span><br><span class="line">        if (preEnableCustom != isEnableCustom)</span><br><span class="line">        &#123;</span><br><span class="line">            preEnableCustom = isEnableCustom;</span><br><span class="line">            if (isEnableCustom)</span><br><span class="line">            &#123;</span><br><span class="line">                colorBuffer = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.RGB111110Float);</span><br><span class="line">                depthBuffer = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.Depth);</span><br><span class="line"></span><br><span class="line">                colorTex = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.RGB111110Float);</span><br><span class="line">                depthTex = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.R16); // RHalf，注意这里别使用RHalf，否则精度没有原来的RenderTextureFormat.Depth的那么高，在正交相机模式下很明显，透视没什么问题</span><br><span class="line"></span><br><span class="line">                colorBuffer.name = &quot;Grab - ColorBuffer&quot;;</span><br><span class="line">                depthBuffer.name = &quot;Grab - DepthBuffer&quot;;</span><br><span class="line">                colorTex.name = &quot;Grab - ColorTexture&quot;;</span><br><span class="line">                depthTex.name = &quot;Grab - DepthTexture&quot;;</span><br><span class="line"></span><br><span class="line">                blitColorBufCommandBuffer = new CommandBuffer();</span><br><span class="line">                blitColorBufCommandBuffer.name = &quot;AfterSkyBox - BlitColor&quot;;</span><br><span class="line">                blitColorBufCommandBuffer.CopyTexture(colorBuffer.colorBuffer, colorTex.colorBuffer);</span><br><span class="line">                camera.AddCommandBuffer(CameraEvent.AfterSkybox, blitColorBufCommandBuffer);</span><br><span class="line"></span><br><span class="line">                blitDepthBufCommandBuffer = new CommandBuffer();</span><br><span class="line">                blitDepthBufCommandBuffer.name = &quot;AfterForwardOpaque - BlitDepth&quot;;</span><br><span class="line">                blitDepthBufCommandBuffer.Blit(depthBuffer.depthBuffer, depthTex.colorBuffer);</span><br><span class="line">                camera.AddCommandBuffer(CameraEvent.AfterForwardOpaque, blitDepthBufCommandBuffer);</span><br><span class="line"></span><br><span class="line">                blitBackBufCommandBuffer = new CommandBuffer();</span><br><span class="line">                blitBackBufCommandBuffer.name = &quot;AfterEverything - BlitBackBuf&quot;;</span><br><span class="line">                blitBackBufCommandBuffer.Blit(colorBuffer.colorBuffer, (RenderTexture)null);</span><br><span class="line">                camera.AddCommandBuffer(CameraEvent.AfterEverything, blitBackBufCommandBuffer);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                ReleaseCommandBuffer();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void OnPreRender()</span><br><span class="line">    &#123;</span><br><span class="line">        RenderTarget();</span><br><span class="line"></span><br><span class="line">        if (isEnableCustom)</span><br><span class="line">        &#123;</span><br><span class="line">            colorBuffer.DiscardContents();</span><br><span class="line">            depthBuffer.DiscardContents();</span><br><span class="line">            colorTex.DiscardContents();</span><br><span class="line">            depthTex.DiscardContents();</span><br><span class="line"></span><br><span class="line">            Shader.SetGlobalTexture(&quot;_GrabScreenColorTex&quot;, colorTex);</span><br><span class="line">            Shader.SetGlobalTexture(&quot;_GrabScreenOpaqueDepthTex&quot;, depthTex);</span><br><span class="line"></span><br><span class="line">            camera.SetTargetBuffers(colorBuffer.colorBuffer, depthBuffer.depthBuffer);</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            camera.targetTexture = null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void ReleaseCommandBuffer()</span><br><span class="line">    &#123;</span><br><span class="line">        Destroy(colorBuffer);</span><br><span class="line">        Destroy(depthBuffer);</span><br><span class="line">        Destroy(colorTex);</span><br><span class="line">        Destroy(depthTex);</span><br><span class="line"></span><br><span class="line">        if (blitColorBufCommandBuffer != null)</span><br><span class="line">        &#123;</span><br><span class="line">            camera.RemoveCommandBuffer(CameraEvent.AfterSkybox, blitColorBufCommandBuffer);</span><br><span class="line">            blitColorBufCommandBuffer.Dispose();</span><br><span class="line">            blitColorBufCommandBuffer = null;</span><br><span class="line">        &#125;</span><br><span class="line">        if (blitDepthBufCommandBuffer != null)</span><br><span class="line">        &#123;</span><br><span class="line">            camera.RemoveCommandBuffer(CameraEvent.AfterForwardOpaque, blitDepthBufCommandBuffer);</span><br><span class="line">            blitDepthBufCommandBuffer.Dispose();</span><br><span class="line">            blitDepthBufCommandBuffer = null;</span><br><span class="line">        &#125;</span><br><span class="line">        if (blitBackBufCommandBuffer != null)</span><br><span class="line">        &#123;</span><br><span class="line">            camera.RemoveCommandBuffer(CameraEvent.AfterEverything, blitBackBufCommandBuffer);</span><br><span class="line">            blitBackBufCommandBuffer.Dispose();</span><br><span class="line">            blitBackBufCommandBuffer = null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void OnDestroy()</span><br><span class="line">    &#123;</span><br><span class="line">        ReleaseCommandBuffer();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EGrabPass%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="toc-text">关于GrabPass的介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%A4%BA%E4%BE%8B"><span class="toc-text">基础示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="toc-text">性能问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E9%98%9F%E5%88%97"><span class="toc-text">渲染队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89Grab%E6%8A%93%E5%B1%8F%E6%93%8D%E4%BD%9C%E8%80%8C%E4%B8%8D%E7%94%A8GrabPass"><span class="toc-text">如何自定义Grab抓屏操作而不用GrabPass</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89Grab%E5%AE%9E%E7%8E%B0"><span class="toc-text">自定义Grab实现</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2023/06/06/%E5%88%BA%E5%AE%A2%E4%BF%A1%E6%9D%A1%E7%BE%8E%E6%9C%AF%E8%B5%84%E6%BA%90%E6%8F%90%E5%8F%96/" rel="next" title="历代刺客信条美术资源提取总结">
+          历代刺客信条美术资源提取总结
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div>
+  
+
+    <div class="giscus" style="padding: 10px 50px"></div>
+    <script src="https://giscus.app/client.js"
+        data-repo="byshenhang/byshenhang.github.io"
+        data-repo-id="R_kgDOJq36zA"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOJq36zM4CW8Cm"
+        data-mapping="title"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="https://cdn.jsdelivr.net/gh/fooying/hexo-theme-xoxo-plus@master/source/css/light_tritanopia_xoxo.min.css"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/byshenhang" target="_blank">GitHub</a> |
+        <a class="bottom-item" target="_blank" rel="noopener" href="https://space.bilibili.com/392721639">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by ShenHang</a> |
+        <!-- <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> | -->
+        <a class="bottom-item" >2023</a>
+    </div>
+</footer>
+
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+
+</body>
+</html>
