@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="Maya," />
+  
+
+  
+    <meta name="description" content="Mel核心之命令" />
+  
+  
+  
+  <link rel="icon" type="image/x-icon" href="/images/logo.png">
+  
+  <title>Mel核心之命令 [ BLOG ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    
+    <span class="title" style="text-transform:none">BLOG</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            
+              <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/categories" class="pure-menu-link">分类</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+            
+          
+      
+          
+            
+              <li class="pure-menu-item"><a href="/introduce" class="pure-menu-link">介绍</a></li>
+            
+          
+      
+  </ul>
+   
+</nav>
+
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Mel核心之命令
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2023-06-13T03:13:56.000Z">
+        2023-06-13
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maya/" rel="tag">Maya</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+      <span class="slash">/</span>
+      <span class="read">阅读耗时 7 分钟</span>
+    </header>
+
+    <div class="post-content">
+      <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p> Maya 中有三种类型的命令：运行时命令、MEL 程序和 Maya MEL 命令</p>
+<p> 运行时命令是由其他命令或脚本（Maya 命令和 MEL 程序）组成的命令。它类似于单行包裹器，可用于执行具有短标签的 MEL 命令行上的长脚本（或脚本集）。可执行的许多（但不是所有）菜单项和图标都使用运行时命令来启动</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>创建并选择多边形，然后选择(Edit Mesh &gt; Add Divisions)。许多命令显示在脚本编辑器的顶部窗格中。在此历史中滚动，您将看到已输出这些行（朝向顶部）：<br> <figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> SubdividePolygon;</span><br><span class="line">performPolySubdivide <span class="string">&quot;&quot;</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">polySubdivideFacet</span> -dv <span class="number">1</span> -m <span class="number">0</span> -ch <span class="number">1</span> pSphere1;</span><br></pre></td></tr></table></figure></p>
+<p>在底部输入</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">whatIs</span> SubdividePolygon;</span><br></pre></td></tr></table></figure>
+<p>通过 whatIs 命令，可以查询字符串的类型（在这种情况下为 SubdividePolygon）</p>
+<p>利用Mel进行属性修改<br>选择对象。在其形状节点（例如 pPlaneShape1）中，展开属性编辑器的“对象显示”(Object Display)部分，然后禁用“可见性”(Visibility)属性。</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">setAttr</span> <span class="string">&quot;pPlaneShape1.visibility&quot;</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>列出场景中所有选定对象的变换节点</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">string</span> $nodes[] = <span class="string">`ls -selection`</span>;</span><br></pre></td></tr></table></figure>
+
+<p>setAttr 命令可将每个形状节点的可见性设置为 0</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="comment">//列出所有选定对象的变换节点</span></span><br><span class="line"><span class="keyword">string</span> $nodes[] = <span class="string">`ls -selection`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ($node <span class="keyword">in</span> $nodes)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//循环遍历每个对象并获得其形状节点</span></span><br><span class="line">    <span class="keyword">string</span> $shapes[] = <span class="string">`listRelatives -shapes $node`</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//将每个形状节点的可见性属性设置为0</span></span><br><span class="line">    <span class="comment">//形状节点保存到$shape数组的第一个（或第0个）元素</span></span><br><span class="line">    <span class="keyword">setAttr</span> ($shapes[<span class="number">0</span>] + <span class="string">&quot;.visibility&quot;</span>) (<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="属性查询"><a href="#属性查询" class="headerlink" title="属性查询"></a>属性查询</h2><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">listAttr</span> polySphere1</span><br></pre></td></tr></table></figure>
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Result: message caching isHistoricallyInteresting nodeState binMembership frozen output axis axisX axisY axisZ paramWarn uvSetName radius subdivisionsAxis subdivisionsHeight texture createUVs //</span></span><br></pre></td></tr></table></figure>
+
+<p>polysphere1 是多边形的历史节点，listAttr 返回用于创建球体的属性；例如：细分、半径等。</p>
+<p>以下命令将返回更多的属性，如 rotateX、scaleX 等：</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">listAttr</span> pSphere1 </span><br></pre></td></tr></table></figure>
+
+<p>“显示 &gt; 形状”(Display &gt; Shapes)和“显示 &gt; 属性(通道)”(Display &gt; Attributes (Channels))。选择属性时，将在“脚本编辑器”(Script Editor)中回显选择命令，以允许您找出属性名称</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> -r pSphereShape1.castsShadows ;</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改选定节点"><a href="#修改选定节点" class="headerlink" title="修改选定节点"></a>修改选定节点</h3><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 列出所有节点</span></span><br><span class="line"><span class="keyword">ls</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 列出特定类型的节点</span></span><br><span class="line"><span class="keyword">ls</span> -type <span class="keyword">polySphere</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 列出了类型为 polySphere 的所有节点，然后将每个球体的半径加 2</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">string</span> $nodes[] = <span class="string">`ls -type polySphere`</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ($node <span class="keyword">in</span> $nodes)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> $r = <span class="string">`getAttr ($node + &quot;.radius&quot;)`</span>;</span><br><span class="line">        <span class="keyword">setAttr</span> ($node + <span class="string">&quot;.radius&quot;</span>) ($r + <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 列出场景中所有选定对象的变换节点：</span></span><br><span class="line"><span class="keyword">ls</span> -selection</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下示例脚本按 2 缩放选择列表中的所有对象。</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">string</span> $nodes[] = <span class="string">`ls -selection`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ($node <span class="keyword">in</span> $nodes)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> $sX = <span class="string">`getAttr ($node + &quot;.scaleX&quot;)`</span>;</span><br><span class="line">    <span class="keyword">int</span> $sY = <span class="string">`getAttr ($node + &quot;.scaleY&quot;)`</span>;</span><br><span class="line">    <span class="keyword">int</span> $sZ = <span class="string">`getAttr ($node + &quot;.scaleZ&quot;)`</span>;</span><br><span class="line">    <span class="keyword">setAttr</span> ($node + <span class="string">&quot;.scaleX&quot;</span>) ($sX * <span class="number">2</span>);</span><br><span class="line">    <span class="keyword">setAttr</span> ($node + <span class="string">&quot;.scaleY&quot;</span>) ($sY * <span class="number">2</span>);</span><br><span class="line">    <span class="keyword">setAttr</span> ($node + <span class="string">&quot;.scaleZ&quot;</span>) ($sZ * <span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="保存脚本并调用"><a href="#保存脚本并调用" class="headerlink" title="保存脚本并调用"></a>保存脚本并调用</h3><h4 id="工具架方式"><a href="#工具架方式" class="headerlink" title="工具架方式"></a>工具架方式</h4><p>如何把写入的脚本保存到工具架<br>在脚本编辑器中，选择要添加的脚本行，然后使用鼠标中键将选择拖动到工具架。</p>
+<p>将显示一个对话框，要求您选择脚本的语言。</p>
+<p>选择语言后，表示您的自定义脚本的图标现在已添加到“工具架”(Shelf)。</p>
+<p>右键单击该图标，然后选择“编辑”(Edit)以打开“工具架编辑器”(Shelf Editor)窗口。<br>可以使用此编辑器自定义添加到“工具架”(Shelf)的新项目。例如，在“工具架”(Shelves)选项卡中自定义图标，或者在“命令”(Command)选项卡中修改命令。</p>
+<h4 id="另存为-MEL-文件并调用其程序"><a href="#另存为-MEL-文件并调用其程序" class="headerlink" title="另存为 MEL 文件并调用其程序"></a>另存为 MEL 文件并调用其程序</h4><p>以命令名称作为文件名、.mel 作为文件扩展名（例如，对于命令 myCommand，此名称为 myCommand.mel）将脚本保存到 MAYA_SCRIPT_PATH 中的文件夹。<br>如果选择此方法且 .mel 文件包含多个全局程序，则必须先调用 mycommand，然后再调用文件中的其他全局程序。因此，在这种情况下，此方法可能不是您的首选方法。</p>
+<p>使用任意文件名保存脚本，然后使用 source 命令将其源化。<br>脚本源化后，可以按任意顺序调用其任何全局程序。</p>
+<p>注： 如果不确定是否需要源化脚本，则可在调用之前测试函数在 MEL 中是否可用：</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">If (!<span class="string">`exists myFunction`</span>) </span><br><span class="line">    <span class="keyword">source</span> myFile;</span><br><span class="line">myFunction;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询节点类型"><a href="#查询节点类型" class="headerlink" title="查询节点类型"></a>查询节点类型</h3><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">nodeType</span> nClothShape1;</span><br><span class="line"><span class="comment">// Result: nCloth // </span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-text">示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E6%9F%A5%E8%AF%A2"><span class="toc-text">属性查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA"><span class="toc-text">输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%80%89%E5%AE%9A%E8%8A%82%E7%82%B9"><span class="toc-text">修改选定节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E8%84%9A%E6%9C%AC%E5%B9%B6%E8%B0%83%E7%94%A8"><span class="toc-text">保存脚本并调用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E6%9E%B6%E6%96%B9%E5%BC%8F"><span class="toc-text">工具架方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%A6%E5%AD%98%E4%B8%BA-MEL-%E6%96%87%E4%BB%B6%E5%B9%B6%E8%B0%83%E7%94%A8%E5%85%B6%E7%A8%8B%E5%BA%8F"><span class="toc-text">另存为 MEL 文件并调用其程序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="toc-text">查询节点类型</span></a></li></ol></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2023/06/13/%E4%BD%BF%E7%94%A8Mel%E5%AF%B9Maya%E8%BF%9B%E8%A1%8C%E6%89%A9%E5%B1%95%E5%BC%80%E5%8F%91/" rel="next" title="使用Mel对Maya进行扩展开发">
+          使用Mel对Maya进行扩展开发
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+      </div>
+    </div>
+  
+
+    <div class="giscus" style="padding: 10px 50px"></div>
+    <script src="https://giscus.app/client.js"
+        data-repo="byshenhang/byshenhang.github.io"
+        data-repo-id="R_kgDOJq36zA"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOJq36zM4CW8Cm"
+        data-mapping="title"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="https://cdn.jsdelivr.net/gh/fooying/hexo-theme-xoxo-plus@master/source/css/light_tritanopia_xoxo.min.css"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+    </script>
+
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://github.com/byshenhang" target="_blank">GitHub</a> |
+        <a class="bottom-item" target="_blank" rel="noopener" href="https://space.bilibili.com/392721639">友情链接</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by ShenHang</a> |
+        <!-- <a class="bottom-item" href="https://github.com/fooying/hexo-theme-xoxo-plus" target="_blank">Theme xoxo-plus</a> | -->
+        <a class="bottom-item" >2023</a>
+    </div>
+</footer>
+
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+  
+
+</body>
+</html>
