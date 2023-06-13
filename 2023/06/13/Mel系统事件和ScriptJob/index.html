@@ -111,7 +111,7 @@
     <div class="post-content">
       <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>使用 MEL 创建在发生特定系统事件时运行的脚本。使用 scriptJob 命令可完成此操作。Maya 会定义大量系统事件，您可以将脚本附加到这些事件中。正常使用 Maya 就会触发这些事件。有些事件会在选择发生更改时、打开新文件时以及拾取新工具时告知您。</p>
 <p>可以使用以下带有 -listEvents 标志的 scriptJob 命令获取所有事件的完整列表：scriptJob -listEvents；这些事件的名称通常不需解释；详细说明可在 scriptJob 文档中找到。</p>
-<p>还有另一种系统事件，称为条件。条件与事件类似，只是条件还具有 True 或 False 值。有些条件可在选择某些内容或动画播放时告知您。可以使用以下带有 -listConditions 标志的 scriptJob 命令获取所有条件的完整列表：</p>
+<p>还有另一种系统事件，称为条件。条件与事件类似，只是条件还具有 True 或 False 值。有些条件可在选择某些内容或动画播放时告知您。可以使用以下带有 -listConditions 标志的 scriptJob 命令获取所有条件的完整列表:</p>
 <figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">scriptJob</span> -listConditions;</span><br></pre></td></tr></table></figure>
 
 <p>无论条件的状态是从 True 更改为 False，还是从 False 更改为 True，条件都会触发其附加的脚本。使用 isTrue 命令测试其状态</p>
