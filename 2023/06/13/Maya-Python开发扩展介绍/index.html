@@ -15,13 +15,13 @@
   
 
   
-    <meta name="description" content="Mel系统事件和ScriptJob" />
+    <meta name="description" content="Maya-Python开发扩展介绍" />
   
   
   
   <link rel="icon" type="image/x-icon" href="/images/logo.png">
   
-  <title>Mel系统事件和ScriptJob [ BLOG ]</title>
+  <title>Maya-Python开发扩展介绍 [ BLOG ]</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -85,11 +85,11 @@
   <article class="post" id="post">
     <header class="post-header text-center">
       <h1 class="title">
-        Mel系统事件和ScriptJob
+        Maya-Python开发扩展介绍
       </h1>
       <span>
         
-        <time class="time" datetime="2023-06-13T07:59:00.000Z">
+        <time class="time" datetime="2023-06-13T08:12:43.000Z">
         2023-06-13
       </time>
         
@@ -105,25 +105,40 @@
       <span id="busuanzi_value_page_pv"></span> 点击
     </span>
       <span class="slash">/</span>
-      <span class="read">阅读耗时 4 分钟</span>
+      <span class="read">阅读耗时 6 分钟</span>
     </header>
 
     <div class="post-content">
-      <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>使用 MEL 创建在发生特定系统事件时运行的脚本。使用 scriptJob 命令可完成此操作。Maya 会定义大量系统事件，您可以将脚本附加到这些事件中。正常使用 Maya 就会触发这些事件。有些事件会在选择发生更改时、打开新文件时以及拾取新工具时告知您。</p>
-<p>可以使用以下带有 -listEvents 标志的 scriptJob 命令获取所有事件的完整列表：scriptJob -listEvents；这些事件的名称通常不需解释；详细说明可在 scriptJob 文档中找到。</p>
-<p>还有另一种系统事件，称为条件。条件与事件类似，只是条件还具有 True 或 False 值。有些条件可在选择某些内容或动画播放时告知您。可以使用以下带有 -listConditions 标志的 scriptJob 命令获取所有条件的完整列表:</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">scriptJob</span> -listConditions;</span><br></pre></td></tr></table></figure>
+      <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>Maya 包括自己的 Python 3 解释器、mayapy 和 Python 3 库</p>
+<p>userSetup.py 脚本使 Maya 在启动时运行特定命令</p>
+<p>(Windows -&gt; %MAYA_APP_DIR%&#x2F;&lt;版本&gt;&#x2F;scripts)</p>
+<h2 id="Maya-Python-开发库"><a href="#Maya-Python-开发库" class="headerlink" title="Maya Python 开发库"></a>Maya Python 开发库</h2><p>maya.cmds：适用于 MEL 命令的 Python 包裹器，可用于代替 MEL。有关详细信息，请参见使用 Python 和 Python 命令参考。</p>
+<p>pymel：PyMEL 是 MEL 命令的第三方包裹器，不受 Autodesk 支持。PyMEL 可以作为 Maya 组件安装，也可以使用 pip 进行安装。</p>
+<p>maya.OpenMaya：称为 Python API 1.0。它用于开发 Maya 插件和应用程序。有关 Python API 1.0 的详细信息，请参见 Maya 开发人员帮助中的 Maya Python API 1.0。</p>
+<p>maya.api.OpenMaya：称为 Python API 2.0。它还用于开发 Maya 插件和应用程序。与 Python API 1.0 相比，它更加符合 Python，但不太全面。有关详细信息，请参见 Maya 开发人员帮助中的 Maya Python API 2.0 和 Maya Python API 2.0 参考。</p>
+<h2 id="外部-Python-库与-Maya-Python-结合使用"><a href="#外部-Python-库与-Maya-Python-结合使用" class="headerlink" title="外部 Python 库与 Maya Python 结合使用"></a>外部 Python 库与 Maya Python 结合使用</h2><p>如果要在 Python 脚本中使用 Maya 外部的库，则必须在启动 Maya 之前将这些库添加到 PYTHONPATH 环境变量，或者通过从 Python 解释器中调用 sys.path.append() 将它们添加到系统路径。</p>
+<p>Maya.env 文件中将这些库添加到 PYTHONPATH 环境变量，也可以在启动 Maya 之前在环境中设置该变量。</p>
+<p>Maya.env 文件位于 C:\Users&lt;用户名&gt;\Documents\maya&lt;版本号&gt;\（对于 Windows）、$HOME&#x2F;maya&#x2F;&lt;版本号&gt;&#x2F;（对于 Linux）和 $HOME&#x2F;Library&#x2F;Preferences&#x2F;Autodesk&#x2F;maya&#x2F;&lt;版本号&gt;&#x2F;（对于 macOS）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys </span><br><span class="line">sys.path.append( <span class="string">&#x27;&lt;Path_To_Libraries&gt;&#x27;</span> )</span><br></pre></td></tr></table></figure>
 
-<p>无论条件的状态是从 True 更改为 False，还是从 False 更改为 True，条件都会触发其附加的脚本。使用 isTrue 命令测试其状态</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">global</span> <span class="keyword">proc</span> checkY()&#123;</span><br><span class="line"> <span class="keyword">float</span> $y = <span class="string">`getAttr myObject.ty`</span>;</span><br><span class="line"> <span class="keyword">if</span> ( $y &gt; <span class="number">10.0</span> )&#123;</span><br><span class="line"> <span class="keyword">window</span>;</span><br><span class="line"> <span class="keyword">columnLayout</span>;</span><br><span class="line"> <span class="keyword">text</span> -l <span class="string">&quot;Object is too far up!&quot;</span>;</span><br><span class="line"> <span class="keyword">showWindow</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">scriptJob</span> -attributeChange <span class="string">&quot;myObject.ty&quot;</span> <span class="string">&quot;checkY&quot;</span>;</span><br></pre></td></tr></table></figure>
-<p>对象升高得太远时以警告形式通知</p>
-<h2 id="删除作业"><a href="#删除作业" class="headerlink" title="删除作业"></a>删除作业</h2><p> scriptJob 命令将脚本附加到事件或条件时，该命令将返回唯一的 job number,使用此编号来删除（消除）已创建的作业。假设以上数字为 17。若要停止该脚本使其不再运行，可以使用带有 -kill 标志的 scriptJob 命令<br> <figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">scriptJob</span> -kill <span class="number">17</span>;</span><br></pre></td></tr></table></figure></p>
-<p>获得系统中运行的所有 scriptJob 的完整列表，使用 -listJobs</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">scriptJob</span> -listJobs;</span><br></pre></td></tr></table></figure>
+<h2 id="Python-中初始化和未初始化"><a href="#Python-中初始化和未初始化" class="headerlink" title="Python 中初始化和未初始化"></a>Python 中初始化和未初始化</h2><p>在 mayapy 或其他外部 Python 解释器中使用 Maya Python 之前，您需要在解释器中加载和初始化 Maya 库。<br>使用 import maya.standalone 在解释器中加载库，然后使用 initialize() 初始化它们：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> maya.standalone </span><br><span class="line">maya.standalone.initialize()</span><br></pre></td></tr></table></figure>
 
-<p>如果在 -runOnce 标志设置为 True 的情况下创建作业，则作业只会运行一次，随后便删除其本身。</p>
-<p>可以使用 -parent 标志将作业附加到 UI 的特定元素，以便在删除 UI 元素时，也一同删除作业</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">global</span> <span class="keyword">proc</span> updateSelWind()&#123;</span><br><span class="line"> <span class="keyword">if</span> ( <span class="string">`isTrue SomethingSelected`</span> )&#123;</span><br><span class="line"> <span class="keyword">text</span> -edit -label <span class="string">&quot;Something is selected.&quot;</span> selText;</span><br><span class="line"> &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"> <span class="keyword">text</span> -edit -label <span class="string">&quot;Nothing is selected.&quot;</span> selText;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">string</span> $windowName = <span class="string">`window`</span>;</span><br><span class="line"> <span class="keyword">columnLayout</span>;</span><br><span class="line"> <span class="keyword">text</span> selText;</span><br><span class="line"> updateSelWind;</span><br><span class="line"> <span class="keyword">showWindow</span> $windowName;</span><br><span class="line"> <span class="keyword">scriptJob</span></span><br><span class="line"> -<span class="keyword">parent</span> $windowName <span class="comment">//将作业附加到窗口</span></span><br><span class="line"> -conditionChange <span class="string">&quot;SomethingSelected&quot;</span> <span class="string">&quot;updateSelWind&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>如果您是从 Maya 脚本编辑器中运行脚本，则无需调用 initialize()。这是因为 Maya 库会在脚本编辑器中自动加载和初始化。从脚本编辑器中调用 initialize() 会生成错误。如果您正在写入的脚本可能是从 Maya 脚本编辑器或外部解释器中调用的，则需要将对 initialize() 的调用包含在 try 块中。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>: 			</span><br><span class="line">    <span class="keyword">import</span> maya.standalone 			</span><br><span class="line">    maya.standalone.initialize() 		</span><br><span class="line"><span class="keyword">except</span>: 			</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>这将安全地捕获从脚本编辑器中调用 initialize() 时生成的错误。</p>
+<p>您的脚本应该在退出之前调用 maya.standalone.uninitialize()。这将完全终止脚本与 Maya 的连接。对 uninitialize() 的调用也将在脚本编辑器中失败。它也应包含在 try 块中。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>: 			</span><br><span class="line">    maya.standalone.uninitialize() 		</span><br><span class="line"><span class="keyword">except</span>: 			</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="MayaPy-和-Python-包管理"><a href="#MayaPy-和-Python-包管理" class="headerlink" title="MayaPy 和 Python 包管理"></a>MayaPy 和 Python 包管理</h2><p>可使用 Maya Python 解释器 mayapy 从命令行调用 pip。无法在 Maya Python 脚本编辑器中调用它。</p>
+<p>Windows	C:\Program Files\Autodesk\Maya&lt;版本号&gt;\bin</p>
+<p>pip 会将软件包安装到 Maya 的站点软件包目录。您需要管理员权限（在 Windows 上）或超级用户权限（在 macOS 和 Linux 上），才能在这些目录中安装软件包</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mayapy -m pip install &lt;标志&gt; &lt;软件包&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装导入PyMel"><a href="#安装导入PyMel" class="headerlink" title="安装导入PyMel"></a>安装导入PyMel</h2><p>PyMEL 是开源 Python 库，它通过提供用于常见操作的简化语法来帮助开发 Maya 扩展</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mayapy -m pip install pymel</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> pymel.core <span class="keyword">as</span> pm</span><br><span class="line">s = pm.sphere()</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -132,7 +147,7 @@
     
   <div id="toc" class="toc-article">
     <strong class="toc-title">目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-text">示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E4%BD%9C%E4%B8%9A"><span class="toc-text">删除作业</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maya-Python-%E5%BC%80%E5%8F%91%E5%BA%93"><span class="toc-text">Maya Python 开发库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E9%83%A8-Python-%E5%BA%93%E4%B8%8E-Maya-Python-%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8"><span class="toc-text">外部 Python 库与 Maya Python 结合使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Python-%E4%B8%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E6%9C%AA%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">Python 中初始化和未初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MayaPy-%E5%92%8C-Python-%E5%8C%85%E7%AE%A1%E7%90%86"><span class="toc-text">MayaPy 和 Python 包管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%AF%BC%E5%85%A5PyMel"><span class="toc-text">安装导入PyMel</span></a></li></ol>
   </div>
 
 
@@ -150,19 +165,14 @@
       <div class="post-nav-item post-nav-next">
         
           <span>〈 </span>
-          <a href="/2023/06/13/Mel%E5%88%9B%E5%BB%BA%E7%95%8C%E9%9D%A2/" rel="next" title="Mel创建界面">
-          Mel创建界面
+          <a href="/2023/06/13/Mel%E7%B3%BB%E7%BB%9F%E4%BA%8B%E4%BB%B6%E5%92%8CScriptJob/" rel="next" title="Mel系统事件和ScriptJob">
+          Mel系统事件和ScriptJob
           </a>
         
       </div>
   
       <div class="post-nav-item post-nav-prev">
           
-          <a href="/2023/06/13/Maya-Python%E5%BC%80%E5%8F%91%E6%89%A9%E5%B1%95%E4%BB%8B%E7%BB%8D/" rel="prev" title="Maya-Python开发扩展介绍">
-            Maya-Python开发扩展介绍
-          </a>
-          <span>〉</span>
-        
       </div>
     </div>
   
